@@ -413,6 +413,20 @@
     box-shadow: 0 -8px 24px rgba(0,0,0,0.35);
   }
 
+  #wakeLockNotice {
+    position: fixed;
+    left: 0.75rem; right: 0.75rem;
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    z-index: 41;
+    background: rgba(196, 67, 43, 0.94);
+    color: var(--sand);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    padding: 0.6rem 0.85rem;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  }
+
   .player-icon {
     flex-shrink: 0;
     width: 38px;
@@ -579,6 +593,8 @@
 </main>
 
 <footer>Roadtrip Radio — built for the highway, not the map</footer>
+
+<p id="wakeLockNotice" style="display:none;"></p>
 
 <div class="player-bar" id="playerBar">
   <div class="player-icon" id="playerIcon">
@@ -885,15 +901,27 @@
   // This does NOT enable true background audio (switching to another app
   // will still stop playback) — it only prevents the idle-timeout lock.
   let wakeLock = null;
+  let wakeLockWarned = false;
+  const wakeLockNotice = document.getElementById('wakeLockNotice');
+
+  function warnNoWakeLock(reason) {
+    if (wakeLockWarned || !wakeLockNotice) return;
+    wakeLockWarned = true;
+    wakeLockNotice.textContent = `Heads up: this browser can't keep the screen awake (${reason}) — it may still lock during playback.`;
+    wakeLockNotice.style.display = 'block';
+  }
 
   async function requestWakeLock() {
-    if (!('wakeLock' in navigator) || wakeLock) return;
+    if (wakeLock) return;
+    if (!('wakeLock' in navigator)) {
+      warnNoWakeLock('unsupported browser');
+      return;
+    }
     try {
       wakeLock = await navigator.wakeLock.request('screen');
       wakeLock.addEventListener('release', () => { wakeLock = null; });
     } catch (e) {
-      // unsupported, permission denied, or battery saver — fail silently,
-      // playback still works, the phone just may auto-lock as before
+      warnNoWakeLock(e.name || 'request failed');
     }
   }
 

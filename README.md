@@ -69,8 +69,13 @@ multi-state road-trip music product.
   would need the bigger architectural change (native app wrapper, or a
   licensed streaming SDK with real OS-level media session support) to
   actually fix. Wake Lock support also isn't universal (works on Android
-  Chrome broadly; iOS Safari requires 16.4+); unsupported browsers just
-  silently skip it and behave as before.
+  Chrome broadly; iOS Safari requires 16.4+; in-app browsers like the ones
+  inside Messages/Instagram/TikTok often lack it entirely). Unsupported
+  browsers now show a visible banner ("this browser can't keep the screen
+  awake...") above the player bar the first time playback starts, instead
+  of failing silently — this was added after an initial report of the
+  fix "still" not working, to make it possible to tell whether that's an
+  unsupported-browser case or an actual bug.
 - **YouTube ads before tracks are expected, not a bug.** Pre-roll ads on
   embedded videos are inserted by YouTube on the video owner's behalf —
   this app has no control over them, and that's by design: the ad revenue
