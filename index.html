@@ -512,10 +512,16 @@
     overflow: hidden;
   }
 
-  .player-icon iframe {
-    width: 38px !important;
-    height: 38px !important;
-    pointer-events: none;
+  /* the actual YouTube player is audio-only from the user's perspective —
+     kept in the DOM (not display:none) so playback isn't throttled, just
+     moved off-screen instead of shown in the player bar */
+  #ytPlayer {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 
   .player-meta {
@@ -643,8 +649,9 @@
 
 <div class="player-bar" id="playerBar">
   <div class="player-icon" id="playerIcon">
-    <div id="ytPlayer"></div>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
   </div>
+  <div id="ytPlayer"></div>
   <div class="player-meta">
     <p class="player-title" id="playerTitle">Pick a mood to start the radio</p>
     <p class="player-sub" id="playerSub">Texas Drive Radio</p>
