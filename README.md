@@ -55,6 +55,20 @@ multi-state road-trip music product.
   `images/hero.jpg`.
 - Video ID rot: songs occasionally get taken down or re-uploaded under a
   new ID — worth a periodic spot-check regardless of the point above.
+- **YouTube ads before tracks are expected, not a bug.** Pre-roll ads on
+  embedded videos are inserted by YouTube on the video owner's behalf —
+  this app has no control over them, and that's by design: the ad revenue
+  is how artists/labels get paid for this app using their music for free
+  instead of needing a paid sync license. There is no compliant way to
+  strip or skip these ads; doing so would violate YouTube's embed Terms
+  of Service and risk the embed (or domain) getting throttled/blocked
+  entirely. Whether a given track has an ad depends on how that specific
+  video was monetized, so it varies by song. YouTube Premium removes ads,
+  but only for a listener's own account — not something the site can turn
+  on for them. The real fix, if this becomes a dealbreaker, is a paid
+  sync license per song or a licensed streaming API (Spotify/Apple Music)
+  requiring the listener's own account — both real-money, Phase-3-or-later
+  business decisions, not a code fix.
 - **Why the Spotify link is a search link, not an embedded player**:
   Spotify's embed widget needs an exact 22-character track ID per song.
   This build environment has no network access to Spotify (same
