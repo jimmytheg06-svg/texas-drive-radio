@@ -12,7 +12,7 @@ multi-state road-trip music product.
 - State filter chips (All states, TX, AZ, CA, CO, FL, LA) narrow the road
   trip list below
 - 8 road trips across 6 states, each a real named route with mileage/drive
-  time and a genre-matched playlist:
+  time and a genre-matched 6-track playlist:
   - **Texas** — Texas Pride (DFW → Hill Country), Date Night Drive
     (Austin → San Antonio), Long Haul Throwback (Houston → El Paso)
   - **Arizona** — Route 66 Desert Run (Seligman → Kingman)
@@ -30,15 +30,16 @@ multi-state road-trip music product.
 
 - **Track YouTube IDs are NOT verified.** This build environment has no
   network access to YouTube (or to the reference site that inspired this
-  pivot), so the ~29 video IDs across the 5 new states (Arizona, California,
-  Colorado, Florida, Louisiana) are best-effort picks from training
-  knowledge, not confirmed live. The original 15 Texas track IDs *were*
-  verified in an earlier session and are more trustworthy. **Before showing
-  this to anyone outside the team, spot-check every new-state track** —
-  open each one and confirm it's the right song and actually embeddable.
-  A bad ID just auto-skips to the next track (see `onError` in the
-  `<script>` block) so nothing breaks, but a skipped/wrong song undercuts
-  the "music matches your exact route" pitch this product is built on.
+  pivot), so the video IDs are best-effort picks from training knowledge,
+  not confirmed live. Every playlist is now 6 tracks (48 total across 8
+  road trips) — the original 15 Texas track IDs *were* verified in an
+  earlier session and are more trustworthy; the ~33 tracks added since
+  (5 new states plus 3 extra per playlist) are not. **Before showing this
+  to anyone outside the team, spot-check every track** — open each one and
+  confirm it's the right song and actually embeddable. A bad ID just
+  auto-skips to the next track (see `onError` in the `<script>` block) so
+  nothing breaks, but a skipped/wrong song undercuts the "music matches
+  your exact route" pitch this product is built on.
 - **Playback only works when served over a real http(s) origin** (e.g.
   GitHub Pages, Netlify, or `python -m http.server` locally). It will NOT
   play when opened via `file://` or inside a sandboxed in-app preview.
