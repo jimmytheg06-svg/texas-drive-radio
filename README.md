@@ -28,6 +28,9 @@ multi-state road-trip music product.
   track is currently loaded — a fallback source for the exact same song
   if the YouTube video won't play. It's a search link built from
   title + artist, not an embedded Spotify player (see below for why).
+- A Screen Wake Lock while music is playing, so the phone's idle-timeout
+  doesn't lock the screen and stop playback (see below for what this
+  does and doesn't cover).
 - A live-listener count badge for flavor (not real data — cosmetic only)
 
 ## Status / known issues
@@ -55,6 +58,19 @@ multi-state road-trip music product.
   `images/hero.jpg`.
 - Video ID rot: songs occasionally get taken down or re-uploaded under a
   new ID — worth a periodic spot-check regardless of the point above.
+- **The Screen Wake Lock only prevents idle-timeout locking, not true
+  background audio.** It requests `navigator.wakeLock` while a track is
+  playing, releasing it on pause — this stops the phone from auto-locking
+  from sitting idle (e.g. mounted on a dash), which is what was actually
+  reported ("when the phone locks the music stops"). It does **not** keep
+  audio playing if the user manually switches to another app (Maps,
+  texting, etc.) or presses the physical lock/power button — that's the
+  cross-origin-iframe background-audio limitation described above, and
+  would need the bigger architectural change (native app wrapper, or a
+  licensed streaming SDK with real OS-level media session support) to
+  actually fix. Wake Lock support also isn't universal (works on Android
+  Chrome broadly; iOS Safari requires 16.4+); unsupported browsers just
+  silently skip it and behave as before.
 - **YouTube ads before tracks are expected, not a bug.** Pre-roll ads on
   embedded videos are inserted by YouTube on the video owner's behalf —
   this app has no control over them, and that's by design: the ad revenue

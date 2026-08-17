@@ -872,11 +872,41 @@
         setTimeout(() => { if (ytPlayer && isPlaying) ytPlayer.unMute(); }, 250);
       }
       startProgressPoll();
+      requestWakeLock();
     } else {
       if (ytPlayer && ytReady) ytPlayer.pauseVideo();
       stopProgressPoll();
+      releaseWakeLock();
     }
   }
+
+  // Keeps the screen from auto-locking while music is playing, so the
+  // embedded YouTube player doesn't get suspended by the phone locking.
+  // This does NOT enable true background audio (switching to another app
+  // will still stop playback) — it only prevents the idle-timeout lock.
+  let wakeLock = null;
+
+  async function requestWakeLock() {
+    if (!('wakeLock' in navigator) || wakeLock) return;
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } catch (e) {
+      // unsupported, permission denied, or battery saver — fail silently,
+      // playback still works, the phone just may auto-lock as before
+    }
+  }
+
+  function releaseWakeLock() {
+    if (wakeLock) wakeLock.release();
+    wakeLock = null;
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    // the OS releases the wake lock whenever the tab is hidden — if the
+    // user comes back while still "playing", re-acquire it
+    if (document.visibilityState === 'visible' && isPlaying) requestWakeLock();
+  });
 
   function loadCurrentTrack(autoplay) {
     if (activeTripIdx === null) return;
