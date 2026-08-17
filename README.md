@@ -1,52 +1,74 @@
-# Texas Drive Radio
+# Roadtrip Radio
 
-A mood-picker "radio" landing page for a Texas road-trip playlist site (the
-adult-facing half of a two-site project — a kids' version is planned separately).
+A road-trip picker "radio" landing page — pick a state, get a famous road
+trip in it, and hear a playlist matched to that route's genre/vibe. Started
+as a single-state Texas mood-picker; this is Phase 1 of expanding it into a
+multi-state road-trip music product.
 
 ## What it does
 
-- Hero: driver's-POV photo background (truck dashboard, Texas highway sunset)
-  with the headline "How's the drive feeling?"
-- Five mood presets (Texas Pride, Date Night Drive, Long Haul Throwback,
-  Commute Chill, Need Energy), each with a 3-track playlist
-- Optional "Add a route" layer — pairs a mood with a Texas route
-  (Dallas → Houston, Austin → San Antonio, DFW → Hill Country,
-  Houston → Galveston, Houston → El Paso), showing mileage/drive time
+- Hero: driver's-POV photo background with the headline "Where's the road
+  taking you?"
+- State filter chips (All states, TX, AZ, CA, CO, FL, LA) narrow the road
+  trip list below
+- 8 road trips across 6 states, each a real named route with mileage/drive
+  time and a genre-matched playlist:
+  - **Texas** — Texas Pride (DFW → Hill Country), Date Night Drive
+    (Austin → San Antonio), Long Haul Throwback (Houston → El Paso)
+  - **Arizona** — Route 66 Desert Run (Seligman → Kingman)
+  - **California** — Pacific Coast Highway (San Francisco → Los Angeles)
+  - **Colorado** — Rocky Mountain High (Denver → Trail Ridge Road)
+  - **Florida** — Overseas Highway (Miami → Key West)
+  - **Louisiana** — River Road to New Orleans (Baton Rouge → New Orleans)
 - A docked bottom player bar with real audio playback via the YouTube
   IFrame API — play/pause, skip, live progress bar, auto-advance to the
-  next track when one ends
+  next track when one ends. The YouTube player itself is positioned
+  off-screen (audio only) rather than shown in the player bar.
 - A live-listener count badge for flavor (not real data — cosmetic only)
 
 ## Status / known issues
 
-- **Playback only works when served over a real http(s) origin** (e.g. GitHub
-  Pages, Netlify, or `python -m http.server` locally). It will NOT play when
-  opened via `file://` or inside a sandboxed in-app preview — the YouTube
-  IFrame API needs a proper origin to load.
-- iOS Safari requires audio to start muted and get unmuted immediately after
-  (autoplay policy) — this is already implemented (see `setPlaying()` and
-  `loadCurrentTrack()` in the `<script>` block), but hasn't been fully
-  verified on a real device over https yet since testing so far has been
-  through the sandboxed preview.
-- All 15 track YouTube video IDs were verified against real official
-  uploads at the time this was built (Aug 2026) — worth a spot-check if
-  picking this up much later, since videos occasionally get taken down or
-  re-uploaded under a new ID.
-- The hero photo is a single AI-generated image (user-generated via ChatGPT,
-  confirmed original/owned by the user), extracted to `images/hero.jpg` and
-  referenced from `index.html` via a normal `url(...)` background-image.
+- **Track YouTube IDs are NOT verified.** This build environment has no
+  network access to YouTube (or to the reference site that inspired this
+  pivot), so the ~29 video IDs across the 5 new states (Arizona, California,
+  Colorado, Florida, Louisiana) are best-effort picks from training
+  knowledge, not confirmed live. The original 15 Texas track IDs *were*
+  verified in an earlier session and are more trustworthy. **Before showing
+  this to anyone outside the team, spot-check every new-state track** —
+  open each one and confirm it's the right song and actually embeddable.
+  A bad ID just auto-skips to the next track (see `onError` in the
+  `<script>` block) so nothing breaks, but a skipped/wrong song undercuts
+  the "music matches your exact route" pitch this product is built on.
+- **Playback only works when served over a real http(s) origin** (e.g.
+  GitHub Pages, Netlify, or `python -m http.server` locally). It will NOT
+  play when opened via `file://` or inside a sandboxed in-app preview.
+- iOS Safari requires audio to start muted and get unmuted immediately
+  after (autoplay policy) — implemented in `setPlaying()` and
+  `loadCurrentTrack()`, but not fully verified on a real device yet.
+- The hero photo is a single AI-generated image (user-generated via
+  ChatGPT, confirmed original/owned by the user), stored at
+  `images/hero.jpg`.
+- Video ID rot: songs occasionally get taken down or re-uploaded under a
+  new ID — worth a periodic spot-check regardless of the point above.
 
-## Next steps (not yet built)
+## Roadmap (from the Phase 1 gap assessment)
 
-- Kids' sibling site (age/route-based picker instead of mood-based)
-- Wire the route picker to actually adjust track selection/order (currently
-  it only changes display text, not which tracks play)
-- Real monetization pieces: display ads, affiliate links, Pinterest-friendly
-  content pages per route
+- **Phase 1 (this build)**: 6 states, 8 road trips, same single-file
+  architecture as the original Texas build — proves the "pick a route, hear
+  its exact vibe" hook works across multiple genres before investing in
+  more content.
+- **Phase 2**: pull `roadTrips` out of inline JS into a real JSON data file
+  (or small CMS) so adding states doesn't mean hand-editing a single large
+  HTML file.
+- **Phase 3**: monetize — affiliate links (road-trip gear, hotels along
+  the route) first, display ads once there's real traffic, SEO-friendly
+  per-route content pages for organic/Pinterest discovery.
+- **Phase 4**: fill out remaining states, only once curation pace and
+  engagement are proven.
 
 ## File structure
 
 ```
-index.html   — the entire site (HTML/CSS/JS, no build step)
+index.html      — the entire site (HTML/CSS/JS, no build step)
 images/hero.jpg — hero background photo
 ```
