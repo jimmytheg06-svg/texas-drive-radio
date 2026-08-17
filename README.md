@@ -24,6 +24,10 @@ multi-state road-trip music product.
   IFrame API — play/pause, skip, live progress bar, auto-advance to the
   next track when one ends. The YouTube player itself is positioned
   off-screen (audio only) rather than shown in the player bar.
+- A persistent "find on Spotify" link in the player bar for whatever
+  track is currently loaded — a fallback source for the exact same song
+  if the YouTube video won't play. It's a search link built from
+  title + artist, not an embedded Spotify player (see below for why).
 - A live-listener count badge for flavor (not real data — cosmetic only)
 
 ## Status / known issues
@@ -51,6 +55,15 @@ multi-state road-trip music product.
   `images/hero.jpg`.
 - Video ID rot: songs occasionally get taken down or re-uploaded under a
   new ID — worth a periodic spot-check regardless of the point above.
+- **Why the Spotify link is a search link, not an embedded player**:
+  Spotify's embed widget needs an exact 22-character track ID per song.
+  This build environment has no network access to Spotify (same
+  restriction as YouTube), and unlike YouTube IDs there's no reasonable
+  basis to guess those — fabricating them would mean an almost-certainly-
+  wrong ID for every track, which is worse than not having the feature.
+  A title+artist search link is always correct by construction. If a
+  future session has Spotify access, look up real track IDs and swap
+  this for an actual embedded fallback player.
 
 ## Roadmap (from the Phase 1 gap assessment)
 

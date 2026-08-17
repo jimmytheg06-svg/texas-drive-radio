@@ -503,6 +503,26 @@
     border-radius: 4px;
   }
 
+  #spotifyLink {
+    color: rgba(228, 213, 183, 0.55);
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+  }
+
+  #spotifyLink:hover, #spotifyLink:focus-visible {
+    color: #1DB954;
+    outline: none;
+  }
+
+  #spotifyLink:focus-visible {
+    outline: 2px solid var(--sunset);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
   #playBtn {
     width: 40px;
     height: 40px;
@@ -580,6 +600,9 @@
     <button id="nextBtn" aria-label="Next track">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M16 6h2v12h-2zM4 6l11 6-11 6z"/></svg>
     </button>
+    <a id="spotifyLink" href="#" target="_blank" rel="noopener" aria-label="Find this song on Spotify" title="Find this song on Spotify" style="display:none">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.59 14.42a.622.622 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.622.622 0 1 1-.277-1.215c3.809-.871 7.077-.496 9.713 1.115.293.18.386.563.206.857zm1.223-2.723a.78.78 0 0 1-1.072.258c-2.687-1.652-6.785-2.131-9.965-1.166a.781.781 0 0 1-.453-1.494c3.632-1.102 8.147-.568 11.233 1.329a.78.78 0 0 1 .257 1.073zm.105-2.835C14.692 9.108 9.375 8.929 6.297 9.87a.936.936 0 1 1-.543-1.79c3.532-1.072 9.404-.865 13.115 1.338a.936.936 0 0 1-.952 1.615z"/></svg>
+    </a>
   </div>
 </div>
 
@@ -743,7 +766,19 @@
   const playIcon = document.getElementById('playIcon');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
+  const spotifyLink = document.getElementById('spotifyLink');
   const listenerCountEl = document.getElementById('listenerCount');
+
+  // We don't have real Spotify track IDs to embed (would need to be looked
+  // up per song, same as the YouTube ones), so instead of guessing IDs that
+  // would almost certainly be wrong, this links to a Spotify search for the
+  // exact title + artist — always correct, works as a fallback when a
+  // YouTube track won't play.
+  function updateSpotifyLink(track) {
+    const query = encodeURIComponent(`${track.title} ${track.artist}`);
+    spotifyLink.href = `https://open.spotify.com/search/${query}`;
+    spotifyLink.style.display = 'flex';
+  }
 
   const ICON_PLAY = '<path d="M8 5v14l11-7z"/>';
   const ICON_PAUSE = '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
@@ -795,6 +830,7 @@
     const t = trip.tracks[currentTrackIdx];
     playerTitle.textContent = t.title;
     playerSub.textContent = `${t.artist ? t.artist + ' · ' : ''}${trip.stateCode} · ${trip.name}`;
+    updateSpotifyLink(t);
 
     document.querySelectorAll('#npTracks li').forEach((li, i) => {
       li.classList.toggle('now-playing', i === currentTrackIdx);
